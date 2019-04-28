@@ -1,5 +1,9 @@
 package top.ljjapp.shoporder.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.codingapi.txlcn.tc.annotation.TxcTransaction;
+import com.codingapi.txlcn.tc.support.DTXUserControls;
+import com.codingapi.txlcn.tracing.TracingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Override
     @Transactional
+    @LcnTransaction //分布式事务注解
     public Result addShopOrder() {
         Result result = null;
         ShopOrder shopOrder = new ShopOrder();
@@ -52,7 +57,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         } else {
             result = new Result(0, "添加订单失败，" + storeResult.getMessage() + "," +pointsResult.getMessage());
         }
-
+        DTXUserControls.rollbackGroup(TracingContext.tracing().groupId());
         return result;
     }
 }

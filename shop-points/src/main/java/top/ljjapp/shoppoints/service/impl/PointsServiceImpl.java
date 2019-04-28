@@ -1,5 +1,8 @@
 package top.ljjapp.shoppoints.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.codingapi.txlcn.tc.annotation.TxcTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.ljjapp.base.Result;
@@ -18,7 +21,9 @@ public class PointsServiceImpl implements PointsService {
     private ShopPonintsRepository shopPonintsRepository;
 
     @Override
-    @Transactional
+//    @Transactional
+//    @TxcTransaction(propagation = DTXPropagation.SUPPORTS)
+    @LcnTransaction //分布式事务注解
     public Result addPoints(Integer num) {
         Result result = null;
         ShopPoints shopPoints = shopPonintsRepository.getOne(ID);
