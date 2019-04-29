@@ -12,6 +12,6 @@ public interface ShopOrderService {
      * 增加一个订单
      * @return
      */
-    Result addShopOrder();
+    Result addShopOrder(Integer store, Integer points, Integer exceptionType);
 
 }

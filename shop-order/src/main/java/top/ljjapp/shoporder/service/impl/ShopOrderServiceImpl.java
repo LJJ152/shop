@@ -32,7 +32,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Override
     @Transactional
-    public Result addShopOrder() {
+    public Result addShopOrder(Integer store, Integer points, Integer exceptionType) {
         Result result = null;
         ShopOrder shopOrder = new ShopOrder();
         shopOrder.setPkId(UUID.randomUUID());
@@ -44,13 +44,16 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         shopOrder.setUpdateTime(new Date(System.currentTimeMillis()));
         ShopOrder order = shopOrderRepository.save(shopOrder);
         //减少库存
-        Result storeResult = storeService.reduceStore(1);
+        Result storeResult = storeService.reduceStore(store);
         //增加积分
-        Result pointsResult = pointsService.addPoints(100);
+        Result pointsResult = pointsService.addPoints(points);
         if (order != null) {
             result = new Result(1, "增加订单成功，" + storeResult.getMessage() + "," +pointsResult.getMessage());
         } else {
             result = new Result(0, "添加订单失败，" + storeResult.getMessage() + "," +pointsResult.getMessage());
+        }
+        if (exceptionType == 0) {
+            throw new RuntimeException("主动抛出一个异常");
         }
 
         return result;
