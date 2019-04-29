@@ -1,5 +1,7 @@
 package top.ljjapp.shoporder.service.impl;
 
+import lombok.extern.java.Log;
+import org.dromara.hmily.annotation.Hmily;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import java.util.Date;
  * @author LJJ
  */
 @Service
+@Log
 public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Autowired
@@ -29,12 +32,14 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Autowired
     private ShopOrderRepository shopOrderRepository;
 
+    private static ShopOrder shopOrder;
 
     @Override
     @Transactional
-    public Result addShopOrder() {
+    @Hmily(confirmMethod = "confirmShopOrder", cancelMethod = "cancelShopOrder")
+    public Result addShopOrder(Integer store, Integer points) {
         Result result = null;
-        ShopOrder shopOrder = new ShopOrder();
+        shopOrder = new ShopOrder();
         shopOrder.setPkId(UUID.randomUUID());
         shopOrder.setUserName("李铁花");
         shopOrder.setOrderName("" + (int)(Math.random()*1000));
@@ -44,15 +49,33 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         shopOrder.setUpdateTime(new Date(System.currentTimeMillis()));
         ShopOrder order = shopOrderRepository.save(shopOrder);
         //减少库存
-        Result storeResult = storeService.reduceStore(1);
+        Result storeResult = storeService.reduceStore(store);
         //增加积分
-        Result pointsResult = pointsService.addPoints(100);
+        Result pointsResult = pointsService.addPoints(points);
         if (order != null) {
             result = new Result(1, "增加订单成功，" + storeResult.getMessage() + "," +pointsResult.getMessage());
         } else {
             result = new Result(0, "添加订单失败，" + storeResult.getMessage() + "," +pointsResult.getMessage());
         }
-
+//        if (true) {
+//            throw new RuntimeException("主动抛出异常");
+//        }
         return result;
+    }
+
+    public void confirmShopOrder(Integer store, Integer points) {
+        shopOrder.setOrderState(1);
+        //更改订单状态
+        shopOrderRepository.save(shopOrder);
+        log.info("=========进行订单confirm操作完成================");
+    }
+
+    public void cancelShopOrder(Integer store, Integer points) {
+        shopOrder.setOrderState(-1);
+        //更改订单状态
+        shopOrderRepository.save(shopOrder);
+        //或者直接删除此订单
+//        shopOrderRepository.delete(shopOrder);
+        log.info("=========进行订单cancel操作完成================");
     }
 }

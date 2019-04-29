@@ -1,20 +1,14 @@
 server:
-  port: 8761 # eureka服务器端口号。尽管无论官网还是大部分参考书都使用8761
+  port: 8761
 
 eureka:
   instance:
     hostname: localhost
   client:
-    # 默认情况下，eureka server同时也是eureka client，用于相互注册形成高可用eureka服务。
-    # 单点时，如果registerWithEureka配置为true，则eureka server会报错Cannot execute request on any known server
-
-    #通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server.
-    register-with-eureka: false # 是否注册到eureka服务，默认为true，当前已为eureka server，且单点eureka，故配置为false
+    register-with-eureka: false
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/  #配置eureka地址
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
     fetch-registry: false
-#  server:
-#    enableSelfPreservation: false #自我保护机制，默认true。打开后，心跳失败在15分钟内低于85%(renewalPercentThreshold)的服务，也不进行剔除。
 
 spring:
   application:

@@ -1,5 +1,6 @@
 package top.ljjapp.shoporder.service.pointsservice;
 
+import org.dromara.hmily.annotation.Hmily;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,6 +11,7 @@ import top.ljjapp.shoporder.service.fallback.OrderClientFallback;
 @FeignClient(value = "shop-points", fallback = OrderClientFallback.class)
 public interface PointsService {
 
+    @Hmily
     @RequestMapping(value = "/shop/add-points", method = RequestMethod.GET)
     Result addPoints(@RequestParam Integer num);
 
