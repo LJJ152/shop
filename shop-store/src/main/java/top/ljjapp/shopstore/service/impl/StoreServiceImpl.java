@@ -1,12 +1,18 @@
 package top.ljjapp.shopstore.service.impl;
 
+import com.yiqiniu.easytrans.core.EasyTransFacade;
+import com.yiqiniu.easytrans.protocol.BusinessProvider;
+import com.yiqiniu.easytrans.protocol.tcc.EtTcc;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.ljjapp.api.WalletPayRequestCfg;
 import top.ljjapp.base.Result;
 import top.ljjapp.shopstore.dao.ShopStoreRepository;
 import top.ljjapp.shopstore.model.ShopStore;
 import top.ljjapp.shopstore.service.StoreService;
 
+import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -14,6 +20,7 @@ import java.util.List;
  * @author LJJ
  */
 @Service
+@Log
 public class StoreServiceImpl implements StoreService {
 
     private final String ID = "5u4c01b670c44f36b7ac9c7a41679c28";
@@ -21,8 +28,12 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private ShopStoreRepository shopStoreRepository;
 
+    @Resource
+    private EasyTransFacade transaction;
+
     @Override
     @Transactional
+    @EtTcc(confirmMethod="doConfirmReduce",cancelMethod="doCancelReduce",idempotentType= BusinessProvider.IDENPOTENT_TYPE_FRAMEWORK,cfgClass= WalletPayRequestCfg.class)
     public Result reduceStore(Integer num) {
         Result result = null;
 
@@ -40,4 +51,14 @@ public class StoreServiceImpl implements StoreService {
         return result;
     }
 
+
+    @org.springframework.transaction.annotation.Transactional
+    public void doConfirmReduce(Integer num) {
+        log.info("减少库存成功");
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void doCancelReduce(Integer num) {
+        log.info("减少库存cancel");
+    }
 }

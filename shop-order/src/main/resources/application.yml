@@ -4,7 +4,7 @@ spring:
   application:
     name: shop-order
   datasource:
-    url: jdbc:mysql://localhost:3306/shop_demo?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    url: jdbc:mysql://localhost:3306/shop_demo?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&useSSL=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,3 +21,24 @@ eureka:
 feign:
   hystrix:
     enabled: true
+easytrans:
+  master:
+    zk:
+      zooKeeperUrl: 47.104.179.65:2181
+  stringcodec:
+    zk:
+      zooKeeperUrl: ${easytrans.master.zk.zooKeeperUrl}
+  idgen:
+    trxId:
+      zkSnow:
+        zooKeeperUrl: ${easytrans.master.zk.zooKeeperUrl}
+  log:
+    database:
+      logCleanEnabled: true
+      logReservedDays: 14
+      logCleanTime: 01:22:00
+      druid:
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/wallet_translog?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        username: root
+        password: 123456

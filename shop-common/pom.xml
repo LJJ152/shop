@@ -17,5 +17,18 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <!--easy transation-->
+        <dependency>
+            <groupId>com.yiqiniu.easytrans</groupId>
+            <artifactId>easytrans-starter</artifactId>
+            <exclusions>
+                <!-- did not use queue,so exclusive it,then it won't be initialed -->
+                <!-- 没有使用队列，因此将其排除，否则将会尝试初始化 -->
+                <exclusion>
+                    <groupId>com.yiqiniu.easytrans</groupId>
+                    <artifactId>easytrans-queue-kafka-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 </project>

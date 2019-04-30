@@ -3,6 +3,7 @@ package top.ljjapp.shoporder.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.ljjapp.api.WalletPayMoneyService;
 import top.ljjapp.base.Result;
 import top.ljjapp.shoporder.dao.ShopOrderRepository;
 import top.ljjapp.shoporder.model.ShopOrder;
@@ -11,6 +12,7 @@ import top.ljjapp.shoporder.service.pointsservice.PointsService;
 import top.ljjapp.shoporder.service.storeservice.StoreService;
 import top.ljjapp.utils.UUID;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -29,6 +31,9 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Autowired
     private ShopOrderRepository shopOrderRepository;
 
+    @Resource
+    private WalletPayMoneyService payService;
+
 
     @Override
     @Transactional
@@ -44,7 +49,8 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         shopOrder.setUpdateTime(new Date(System.currentTimeMillis()));
         ShopOrder order = shopOrderRepository.save(shopOrder);
         //减少库存
-        Result storeResult = storeService.reduceStore(store);
+//        Result storeResult = storeService.reduceStore(store);
+        Result storeResult = payService.pay(store);
         //增加积分
         Result pointsResult = pointsService.addPoints(points);
         if (order != null) {

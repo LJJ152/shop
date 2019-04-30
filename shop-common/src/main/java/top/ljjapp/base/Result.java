@@ -2,8 +2,13 @@ package top.ljjapp.base;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
+/**
+ * @author LJJ
+ */
 @Data
-public class Result<T> {
+public class Result<T> implements Serializable {
 
     private Integer code;
     private String message;
