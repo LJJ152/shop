@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * @author LJJ
  */
-@Service
+@Service("shopOrderServiceImpl")
 public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Autowired

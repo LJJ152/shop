@@ -1,6 +1,7 @@
 package top.ljjapp.shoporder.controller;
 
 import lombok.extern.java.Log;
+import org.bytesoft.compensable.Compensable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,14 @@ import top.ljjapp.shoporder.service.ShopOrderService;
 @RestController
 @Log
 @RequestMapping("/shop")
+@Compensable(
+        interfaceClass = ShopOrderService.class,
+        cancellableKey = "shopOrderServiceCancel"
+)
 public class ShopOrderController {
 
     @Autowired
-    private ShopOrderService shopOrderService;
+    private ShopOrderService shopOrderServiceImpl;
 
     /**
      * 添加订单
@@ -30,7 +35,7 @@ public class ShopOrderController {
     public Result addOrder(@RequestParam(required = true, defaultValue = "10") Integer store,
                            @RequestParam(required = true, defaultValue = "10") Integer points,
                            @RequestParam(required = false)Integer exceptionType) {
-        Result result = shopOrderService.addShopOrder(store, points, exceptionType);
+        Result result = shopOrderServiceImpl.addShopOrder(store, points, exceptionType);
         return result;
     }
 
