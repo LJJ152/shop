@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ljjapp.base.Result;
-import top.ljjapp.shopstore.dao.ShopStoreRepository;
+import top.ljjapp.shopstore.dao.ShopStoreDAO;
 import top.ljjapp.shopstore.model.ShopStore;
 import top.ljjapp.shopstore.service.StoreService;
 
@@ -23,19 +23,19 @@ public class StoreServiceImpl implements StoreService {
     private final String ID = "5u4c01b670c44f36b7ac9c7a41679c28";
 
     @Autowired
-    private ShopStoreRepository shopStoreRepository;
+    private ShopStoreDAO shopStoreDAO;
 
     @Override
     @Transactional
     public Result reduceStore(Integer num) {
         Result result = null;
 
-        ShopStore shopStore = shopStoreRepository.getOne(ID);
+        ShopStore shopStore = shopStoreDAO.getOne(ID);
         Integer reduce = shopStore.getStoreNum() - num;
         //当剩余库存足够时，成功
         if (reduce >= 0) {
             shopStore.setStoreNum(reduce);
-            ShopStore save = shopStoreRepository.save(shopStore);
+            shopStoreDAO.save(shopStore);
             result = new Result(1, "减少库存成功");
         }
         else {
