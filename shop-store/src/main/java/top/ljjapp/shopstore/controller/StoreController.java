@@ -19,7 +19,8 @@ public class StoreController {
 
     @GetMapping("/reduce-store")
     public Result reduceStore(@RequestParam Integer num) {
-        Result result = storeService.reduceStore(num);
+        Result result = null;
+//        Result result = storeService.reduceStore(num);
         return result;
     }
 

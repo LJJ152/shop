@@ -1,8 +1,9 @@
 package top.ljjapp.shopstore.service;
 
+import top.ljjapp.api.WalletPayMoneyService;
 import top.ljjapp.base.Result;
 
 public interface StoreService {
 
-    Result reduceStore(Integer num);
+    WalletPayMoneyService.WalletPayResponseVO reduceStore(WalletPayMoneyService.WalletPayRequestVO num);
 }

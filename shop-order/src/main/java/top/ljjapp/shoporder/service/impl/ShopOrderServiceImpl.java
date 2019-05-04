@@ -50,13 +50,20 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         ShopOrder order = shopOrderRepository.save(shopOrder);
         //减少库存
 //        Result storeResult = storeService.reduceStore(store);
-        Result storeResult = payService.pay(store);
+
+        WalletPayMoneyService.WalletPayRequestVO request = new WalletPayMoneyService.WalletPayRequestVO();
+        request.setUserId(store);
+        request.setPayAmount(new Long(points));
+
+        WalletPayMoneyService.WalletPayResponseVO pay = payService.pay(request);
+
+        WalletPayMoneyService.WalletPayResponseVO storeResult = payService.pay(request);
         //增加积分
         Result pointsResult = pointsService.addPoints(points);
         if (order != null) {
-            result = new Result(1, "增加订单成功，" + storeResult.getMessage() + "," +pointsResult.getMessage());
+            result = new Result(1, "增加订单成功，" + "," +pointsResult.getMessage());
         } else {
-            result = new Result(0, "添加订单失败，" + storeResult.getMessage() + "," +pointsResult.getMessage());
+            result = new Result(0, "添加订单失败，" + "," +pointsResult.getMessage());
         }
         if (exceptionType == 0) {
             throw new RuntimeException("主动抛出一个异常");
